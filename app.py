@@ -50,7 +50,13 @@ def login_my_page():
 
 @app.route('/insta_api', methods=['POST'])
 def insta_api():
-    r = requests.get('https://graph.facebook.com/17841593698074073/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+    hashtag_word = request.form['hashtag_word']
+    hashtag_id = requests.get(f'https://graph.facebook.com/ig_hashtag_search?user_id=17841444881116627&q={hashtag_word}&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+    hashtag_id = hashtag_id.json()
+    hashtag_id = hashtag_id['data']
+    hashtag_id = [d.get('id') for d in hashtag_id]
+    hashtag_id = hashtag_id[0]
+    r = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
     print(r.json())
     return render_template('my_page.html')
 
