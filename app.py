@@ -56,9 +56,12 @@ def insta_api():
     hashtag_id = hashtag_id['data']
     hashtag_id = [d.get('id') for d in hashtag_id]
     hashtag_id = hashtag_id[0]
-    r = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
-    print(r.json())
-    return render_template('my_page.html')
+    results = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+    results = results.json()
+    results = results['data']
+    results = [d.get('media_url') for d in results]
+    results = [d for d in results if d != None]
+    return render_template('my_page.html', results=results)
 
 
 if __name__ == "__main__":

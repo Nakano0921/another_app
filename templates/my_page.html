@@ -11,4 +11,13 @@
   <input type="text" name="hashtag_word">
   <input type="submit" value="画像を取得する">
 </form>
+{% if results != None %}
+  {% for result in results %}
+    <ul>
+      <li>
+        <a href={{result}}>画像</a>
+      </li>
+    </ul>
+  {% endfor %}
+{% endif %}
 {% endblock %}
