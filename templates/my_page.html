@@ -2,5 +2,12 @@
 
 {% block body %}
 <h1>another My Page</h1>
-<p>Hello {{username}}!!</p>
+{% if username != None %}
+  <p>Hello {{username}}!!</p>
+{% else %}
+  <p>Hello!!</p>
+{% endif %}
+<form action="/insta_api" method="POST">
+  <input type="submit" value="インスタAPIを叩く">
+</form>
 {% endblock %}
