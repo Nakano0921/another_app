@@ -7,6 +7,15 @@
 {% else %}
   <h3>Hello!!</h3>
 {% endif %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <p>画像だけ取得したい方はこちら</p>
 <form action="/insta_api" method="POST">
   <input type="text" name="hashtag_word">
