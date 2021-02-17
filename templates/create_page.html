@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<p>新規登録</p>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <form action="/" method="POST">
   <label>ユーザ名：</label>
   <input type="text" name="username">

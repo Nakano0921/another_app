@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 import MySQLdb
 import requests
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 conn = MySQLdb.connect(host='127.0.0.1', user='root', password='0921Nknkn',  db='another_user')
 cursor = conn.cursor()
 
@@ -11,13 +12,21 @@ def top_page():
     if request.method == 'GET':
         return render_template('top.html')
     elif request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        cursor.execute(
-                       'INSERT INTO users (user_name, password) values (%s, %s)',
-                      (username, password))
-        conn.commit()
-        return render_template('top.html')
+        if request.form['username'] == "":
+            flash("ユーザー名を入力してください。")
+            return render_template('create_page.html')
+        elif request.form['password'] == "":
+            flash("パスワードを入力してください。")
+            return render_template('create_page.html')
+        else:
+            username = request.form['username']
+            password = request.form['password']
+            cursor.execute(
+                        'INSERT INTO users (user_name, password) values (%s, %s)',
+                        (username, password))
+            conn.commit()
+            return render_template('top.html')
+    
 
 
 @app.route('/create_page', methods=['POST'])
@@ -50,34 +59,44 @@ def login_my_page():
 
 @app.route('/insta_api', methods=['POST'])
 def insta_api():
-    hashtag_word = request.form['hashtag_word']
-    hashtag_id = requests.get(f'https://graph.facebook.com/ig_hashtag_search?user_id=17841444881116627&q={hashtag_word}&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
-    hashtag_id = hashtag_id.json()
-    hashtag_id = hashtag_id['data']
-    hashtag_id = [d.get('id') for d in hashtag_id]
-    hashtag_id = hashtag_id[0]
-    results = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
-    results = results.json()
-    results = results['data']
-    results = [d.get('media_url') for d in results]
-    results = [d for d in results if d != None]
-    return render_template('my_page.html', results=results)
+    if request.method == 'POST':
+        if request.form['hashtag_word'] == "":
+            flash('ワードを入力してください。')
+            return render_template('my_page.html')
+        else:
+            hashtag_word = request.form['hashtag_word']
+            hashtag_id = requests.get(f'https://graph.facebook.com/ig_hashtag_search?user_id=17841444881116627&q={hashtag_word}&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+            hashtag_id = hashtag_id.json()
+            hashtag_id = hashtag_id['data']
+            hashtag_id = [d.get('id') for d in hashtag_id]
+            hashtag_id = hashtag_id[0]
+            results = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+            results = results.json()
+            results = results['data']
+            results = [d.get('media_url') for d in results]
+            results = [d for d in results if d != None]
+            return render_template('my_page.html', results=results)
 
 
 @app.route('/api_with_ac', methods=['POST'])
 def api_with_ac():
-    hashtag_word = request.form['hashtag_word']
-    hashtag_id = requests.get(f'https://graph.facebook.com/ig_hashtag_search?user_id=17841444881116627&q={hashtag_word}&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
-    hashtag_id = hashtag_id.json()
-    hashtag_id = hashtag_id['data']
-    hashtag_id = [d.get('id') for d in hashtag_id]
-    hashtag_id = hashtag_id[0]
-    post_results = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
-    post_results = post_results.json()
-    post_results = post_results['data']
-    post_results = [d.get('permalink') for d in post_results]
-    post_results = [d for d in post_results if d != None]
-    return render_template('my_page.html', post_results=post_results)
+    if request.method == 'POST':
+        if request.form['hashtag_word'] == "":
+            flash('ワードを入力してください。')
+            return render_template('my_page.html')
+        else:
+            hashtag_word = request.form['hashtag_word']
+            hashtag_id = requests.get(f'https://graph.facebook.com/ig_hashtag_search?user_id=17841444881116627&q={hashtag_word}&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+            hashtag_id = hashtag_id.json()
+            hashtag_id = hashtag_id['data']
+            hashtag_id = [d.get('id') for d in hashtag_id]
+            hashtag_id = hashtag_id[0]
+            post_results = requests.get(f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841444881116627&fields=id,media_type,media_url,permalink&access_token=EAATE5NJ3cpABAHA4cZBUeYcqI6ZAZB8goujfOApsIM5fpeUzgs3gkYaE234HgAQGhC9jJ9AtiltR0ZBNWvzIrZApZCJnm7dzbZA9rHPRDfDdKG0dH7q44B9fitaTFqU6JUeJLWx44Q0vjfz0f3608tJQNz6P07qn5JUWwwf7R8vmqB146XY6ebqAGFV9ZAhH0s4ZD')
+            post_results = post_results.json()
+            post_results = post_results['data']
+            post_results = [d.get('permalink') for d in post_results]
+            post_results = [d for d in post_results if d != None]
+            return render_template('my_page.html', post_results=post_results)
 
 
 if __name__ == "__main__":
