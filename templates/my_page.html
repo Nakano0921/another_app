@@ -5,17 +5,32 @@
 {% if username != None %}
   <p>Hello {{username}}!!</p>
 {% else %}
-  <p>Hello!!</p>
+  <h3>Hello!!</h3>
 {% endif %}
+<p>画像だけ取得したい方はこちら</p>
 <form action="/insta_api" method="POST">
   <input type="text" name="hashtag_word">
   <input type="submit" value="画像を取得する">
+</form>
+<p>アカウントも一緒に取得したい方はこちら</p>
+<form action="/api_with_ac" method="POST">
+  <input type="text" name="hashtag_word">
+  <input type="submit" value="アカウントも一緒に取得する">
 </form>
 {% if results != None %}
   {% for result in results %}
     <ul>
       <li>
         <a href={{result}}>画像</a>
+      </li>
+    </ul>
+  {% endfor %}
+{% endif %}
+{% if post_results != None %}
+  {% for post_result in post_results %}
+    <ul>
+      <li>
+        <a href={{post_result}}>投稿</a>
       </li>
     </ul>
   {% endfor %}
