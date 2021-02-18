@@ -4,7 +4,8 @@ import requests
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-conn = MySQLdb.connect(host='127.0.0.1', user='root', password='0921Nknkn',  db='another_user')
+conn = MySQLdb.connect(host='us-cdbr-east-03.cleardb.com', user='ba63061485e464', password='62f2ae1c',  db='heroku_36c34e10c6a7de1')
+# conn = MySQLdb.connect(host='127.0.0.1', user='root', password='0921Nknkn',  db='another_user')
 cursor = conn.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
