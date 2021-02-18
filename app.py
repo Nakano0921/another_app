@@ -48,6 +48,7 @@ def top_page():
             reg_user = AnotherUser(user_name=username, password=password)
             session.add(reg_user)
             session.commit()
+            session.close()
             return render_template('top.html')
     
 
@@ -59,8 +60,6 @@ def create_page():
 
 @app.route('/my_page', methods=['GET', 'POST'])
 def login_my_page():
-    if request.method == 'GET':
-        return render_template('my_page.html')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -74,8 +73,10 @@ def login_my_page():
         #               (password,))
         # rows = cursor.fetchone()
         # db_password = rows
-        user = session.query(AnotherUser).filter_by(user_name='username')
-        db_password = session.query(AnotherUser).filter_by(password='password')
+        user = session.query(AnotherUser).filter(AnotherUser.user_name == username).first()
+        print(user)
+        db_password = session.query(AnotherUser).filter(AnotherUser.password == password).first()
+        print(db_password)
         if user != None and db_password != None:
             return render_template('my_page.html', username=username)
         else:
