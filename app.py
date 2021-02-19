@@ -1,12 +1,32 @@
+import cryptography
 from flask import Flask, render_template, request, flash
 import MySQLdb
 import requests
+import sqlalchemy
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-conn = MySQLdb.connect(host='us-cdbr-east-03.cleardb.com', user='ba63061485e464', password='62f2ae1c',  db='heroku_36c34e10c6a7de1')
 # conn = MySQLdb.connect(host='127.0.0.1', user='root', password='0921Nknkn',  db='another_user')
-cursor = conn.cursor()
+# cursor = conn.cursor()
+engine = sqlalchemy.create_engine('mysql+pymysql://be692cbcc38f76:825b465f@s-cdbr-east-03.cleardb.com/heroku_bbea5c2b08bb200')
+engine = sqlalchemy.create_engine('mysql+pymysql://root:0921Nknkn@127.0.0.1/another_user')
+Base = sqlalchemy.ext.declarative.declarative_base()
+
+class AnotherUser(Base):
+    __tablename__ = 'another_users'
+    id = sqlalchemy.Column(
+        sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_name = sqlalchemy.Column(
+        sqlalchemy.Text(20), nullable=False)
+    password = sqlalchemy.Column(
+        sqlalchemy.Text(20), nullable=False)
+
+Base.metadata.create_all(engine)
+
+Session = sqlalchemy.orm.sessionmaker(bind=engine)
+session = Session()
 
 @app.route('/', methods=['GET', 'POST'])
 def top_page():
@@ -22,10 +42,14 @@ def top_page():
         else:
             username = request.form['username']
             password = request.form['password']
-            cursor.execute(
-                        'INSERT INTO users (user_name, password) values (%s, %s)',
-                        (username, password))
-            conn.commit()
+            # cursor.execute(
+            #             'INSERT INTO users (user_name, password) values (%s, %s)',
+            #             (username, password))
+            # conn.commit()
+            reg_user = AnotherUser(user_name=username, password=password)
+            session.add(reg_user)
+            session.commit()
+            session.close()
             return render_template('top.html')
     
 
@@ -37,21 +61,23 @@ def create_page():
 
 @app.route('/my_page', methods=['GET', 'POST'])
 def login_my_page():
-    if request.method == 'GET':
-        return render_template('my_page.html')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        rows = cursor.execute(
-                      'SELECT * FROM users WHERE user_name = %s',
-                      (username,))
-        rows = cursor.fetchone()
-        user = rows
-        db_password = cursor.execute(
-                      'SELECT * FROM users WHERE password = %s',
-                      (password,))
-        rows = cursor.fetchone()
-        db_password = rows
+        # rows = cursor.execute(
+        #               'SELECT * FROM users WHERE user_name = %s',
+        #               (username,))
+        # rows = cursor.fetchone()
+        # user = rows
+        # db_password = cursor.execute(
+        #               'SELECT * FROM users WHERE password = %s',
+        #               (password,))
+        # rows = cursor.fetchone()
+        # db_password = rows
+        user = session.query(AnotherUser).filter(AnotherUser.user_name == username).first()
+        print(user)
+        db_password = session.query(AnotherUser).filter(AnotherUser.password == password).first()
+        print(db_password)
         if user != None and db_password != None:
             return render_template('my_page.html', username=username)
         else:
@@ -101,4 +127,4 @@ def api_with_ac():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
