@@ -11,7 +11,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 # conn = MySQLdb.connect(host='127.0.0.1', user='root', password='0921Nknkn',  db='another_user')
 # cursor = conn.cursor()
 engine = sqlalchemy.create_engine('mysql+pymysql://be692cbcc38f76:825b465f@s-cdbr-east-03.cleardb.com/heroku_bbea5c2b08bb200')
-engine = sqlalchemy.create_engine('mysql+pymysql://root:0921Nknkn@127.0.0.1/another_user')
+# engine = sqlalchemy.create_engine('mysql+pymysql://root:0921Nknkn@127.0.0.1/another_user')
 Base = sqlalchemy.ext.declarative.declarative_base()
 
 class AnotherUser(Base):
