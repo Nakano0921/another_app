@@ -1,1 +1,21 @@
-# another_app
+## another_app
+- 特徴
+  - 「Instagram　API」の「Hashtag Search API」を利用して画像や投稿を取得する
+- 構成技術
+  - python3.9.0
+  - Flask
+  - MySQL
+  - SQLAlchemy
+  - Instagram API
+  - Search Hashtag API
+ - 開発期間：4日間
+ - 開発プロセス
+  - FlaskとMySQLで会員登録とログイン機能
+  - Flaskで「Hashtag Search API」を使用できるようにする
+  - 「Hashtag Search API」でワードを指定できるようにする
+  - 投稿アカウントも一緒に取得できるようにする
+  - Flask flashの適用
+  - SQLAlchemyを適用
+- 今後の課題
+  - Herokuでのデプロイ
+  - 保存した画像をデータベースで管理
